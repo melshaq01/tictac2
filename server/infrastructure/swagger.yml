@@ -1,0 +1,63 @@
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: "TicTacToe"
+  description: "My take on TicTacToe written in React calling a backend API service"
+schemes:
+- "https"
+
+paths:
+  /:
+    get:
+      responses:
+        200:
+          description: "TicTacToe HTML web page containing the TicTacToe API usage information"
+          headers:
+            Content-Type:
+              type: "string"
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Content-Type: "'text/html'"
+            responseTemplates:
+              text/html: "<html>\n    <head>\n        <style>\n        body {\n  \
+                \          color: #333;\n            font-family: Sans-serif;\n  \
+                \          max-width: 800px;\n            margin: auto;\n        }\n\
+                \        </style>\n    </head>\n    <body>\n        <h1>Welcome to my take on TicTacTow\
+                \ written in React calling a backend API service</h1>\n        <p>\n            Welcome.        </p>\n\
+                \    </body>\n</html>"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
+
+  /api/winner:
+    post:
+      description: |
+        "Determine whether the user selection is a winner"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "move"
+        in: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/move"
+      responses:
+        200:
+          description: "Determines if the move is a winning move"
+          schema:
+            $ref: "#/definitions/move"
+        500:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:%AWS_REGION%:lambda:path/2015-03-31/functions/arn:aws:lambda:%AWS_REGION%:%AWS_ACCOUNT_ID%:function:${stageVariables.LambdaFnAuthToken}/invocations"
+        httpMethod: "POST"
+        type: "aws_proxy"
+
+definitions:
+  move:
