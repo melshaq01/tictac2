@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import Board from './component/Board'
+import Board from './component/Board';
+import RestartGame from './component/RestartGame';
 import './App.css';
 
 export class App extends Component {
@@ -83,10 +84,10 @@ export class App extends Component {
 
   handleClick = (id) => {
     this.setState({location: this.state.location.map(location => {
-      if((location.id === id) && (this.state.xIsNext)) {
+      if((location.id === id) && (this.state.xIsNext) && (location.label==='-')) {
         location.label = 'X';
         this.setState({xIsNext: !this.state.xIsNext});
-      } else if ((location.id === id) && (!this.state.xIsNext)) {
+      } else if ((location.id === id) && (!this.state.xIsNext) && (location.label==='-')) {
         location.label = 'O';
         this.setState({xIsNext: !this.state.xIsNext});
       }
@@ -95,16 +96,29 @@ export class App extends Component {
     });
   }
 
+  handleRestartGame = () => {
+    this.setState({location: this.state.location.map(location => {
+      location.label= '-';
+      location.style='square';
+      this.setState({xIsNext: true});
+      return location;
+    })
+  });
+  }
+
   render() {
     this.calculateWinner();
     return (
-      <div>
+      <div className="wrapper">
         <h1>Tic Tac Toe</h1>
         <Board
           location = {this.state.location}
           handleClick = {this.handleClick}
           calculateWinner={this.calculateWinner}
           style= {this.state.style}
+        />
+        <RestartGame
+          handleRestart = {this.handleRestartGame}
         />
       </div>
     )
