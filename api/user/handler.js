@@ -1,5 +1,16 @@
-'use strict';
+const leaderboards = require('leaderboards');
+exports.handler = async (event, context) => {
+    // TODO implement
+    if(event && event.pathParameters && event.pathParameters.user) {
+        console.log(user);
+    }
 
-module.exports.invoke = async (event, context) => {
-    return Promise.resolve({ statusCode: 200});
-}
+    const responseBody = getLeaderBoards();
+
+    const response = {
+        statusCode: 200,
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(responseBody)
+    };
+    return response;
+};

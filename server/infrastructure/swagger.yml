@@ -25,7 +25,7 @@ paths:
               text/html: "<html>\n    <head>\n        <style>\n        body {\n  \
                 \          color: #333;\n            font-family: Sans-serif;\n  \
                 \          max-width: 800px;\n            margin: auto;\n        }\n\
-                \        </style>\n    </head>\n    <body>\n        <h1>Welcome to my take on TicTacTow\
+                \        </style>\n    </head>\n    <body>\n        <h1>Welcome to my take on TicTacToe\
                 \ written in React calling a backend API service</h1>\n        <p>\n            Welcome.        </p>\n\
                 \    </body>\n</html>"
         requestTemplates:
@@ -55,12 +55,9 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-amazon-apigateway-integration:
-        type: "mock"
-        responses:
-          default:
-            statusCode: 200
-            responseTemplates:
-              application/json: "{name:rommel, wins:0, loss:0}"
+        uri: "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-2:663814255135:function:ticktactoe/invocations"
+        httpMethod: "POST"
+        type: "aws_proxy"
 
 definitions:
   Error:

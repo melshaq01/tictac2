@@ -23,5 +23,47 @@ Resources:
         Api1:
           Type: "Api"
           Properties:
-            Path: "/api/info/{user}""
+            Path: "/api/info/{user}"
             Method: "post"
+
+  RoleFuncLeaderBoard:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: "Allow"
+          Principal:
+            Service:
+            - "lambda.amazonaws.com"
+          Action:
+          - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+      - PolicyName: "Fn"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - "logs:CreateLogGroup"
+            - "logs:CreateLogStream"
+            - "logs:PutLogEvents"
+            Resource: "arn:aws:logs:*:*:*"
+          - Effect: "Allow"
+            Action:
+            - "dynamodb:BatchWriteItem"
+            - "dynamodb:PutItem"
+            - "dynamodb:UpdateItem"
+            Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/userinfo"
+          - Effect: "Allow"
+            Action:
+            - "dynamodb:Get*"
+            - "dynamodb:Query"
+            Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/userinfo"
+
+Api:
+    Type: "AWS::Serverless::Api"
+    Properties:
+      StageName: "Production"
+      DefinitionUri: "swagger.yml"
