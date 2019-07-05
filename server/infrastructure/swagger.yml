@@ -25,7 +25,7 @@ paths:
               text/html: "<html>\n    <head>\n        <style>\n        body {\n  \
                 \          color: #333;\n            font-family: Sans-serif;\n  \
                 \          max-width: 800px;\n            margin: auto;\n        }\n\
-                \        </style>\n    </head>\n    <body>\n        <h1>Welcome to my take on TicTacTow\
+                \        </style>\n    </head>\n    <body>\n        <h1>Welcome to my take on TicTacToe\
                 \ written in React calling a backend API service</h1>\n        <p>\n            Welcome.        </p>\n\
                 \    </body>\n</html>"
         requestTemplates:
@@ -33,31 +33,76 @@ paths:
         passthroughBehavior: "when_no_match"
         type: "mock"
 
-  /api/winner:
+  /api/info/{user}:
     post:
       description: |
-        "Determine whether the user selection is a winner"
+        "Keeps a tab of the score"
       produces:
       - "application/json"
       parameters:
-      - name: "move"
-        in: "body"
+      - name: "user"
+        in: "path"
         required: true
         schema:
-          $ref: "#/definitions/move"
+          $ref: "#/definitions/user"
       responses:
         200:
-          description: "Determines if the move is a winning move"
+          description: "Returns the current score for this user"
           schema:
-            $ref: "#/definitions/move"
+            $ref: "#/definitions/User"
         500:
           description: "Unexpected error"
           schema:
             $ref: "#/definitions/Error"
       x-amazon-apigateway-integration:
-        uri: "arn:aws:apigateway:%AWS_REGION%:lambda:path/2015-03-31/functions/arn:aws:lambda:%AWS_REGION%:%AWS_ACCOUNT_ID%:function:${stageVariables.LambdaFnAuthToken}/invocations"
+        uri: "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-2:663814255135:function:ticktactoe/invocations"
         httpMethod: "POST"
         type: "aws_proxy"
 
 definitions:
-  move:
+  Error:
+    type: "object"
+    required:
+    - "code"
+    - "message"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+      description:
+        type: "string"
+      attribute_error:
+        type: "array"
+        items:
+          $ref: "#/definitions/ErrorAttribute"
+
+  ErrorAttribute:
+    type: "object"
+    required:
+    - "code"
+    - "attribute"
+    - "message"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      attribute:
+        type: "string"
+      message:
+        type: "string"
+
+  User:
+    type: "object"
+    required:
+    - "name"
+    - "wins"
+    - "loss"
+    properties:
+      name:
+        type: "string"
+      wins:
+        type: "string"
+      loss:
+        type: "string"
