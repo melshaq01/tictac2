@@ -4,6 +4,11 @@ import RestartGame from './component/RestartGame';
 import './App.css';
 
 export class App extends Component {
+    square = {
+      id: 1,
+      label: '-',
+      style: 'square'
+    }
     state = {
       location: [
         {
