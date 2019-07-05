@@ -3,26 +3,31 @@
 //returns static data for now
 //TODO: integrate with dynamodb
 function getLeaderBoards() {
-  leaderboards: [
+  const leaderboards= [
       {
           name: 'rommel',
-          wins: 100
+          wins: 100,
+          loss: 0
       },
       {
           name: 'grayson',
-          wins: 99
+          wins: 99,
+          loss: 0
       },
       {
           name: 'melissa',
-          wins: 98
+          wins: 98,
+          loss: 0
       },
       {
           name: 'mykael',
-          wins: 0
+          wins: 0,
+          loss: 0
       },
       {
           name: 'grace',
-          wins: 1
+          wins: 1,
+          loss: 0
       }
   ]
   return leaderboards;

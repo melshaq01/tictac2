@@ -33,7 +33,7 @@ paths:
         passthroughBehavior: "when_no_match"
         type: "mock"
 
-  /api/info/{user}:
+  /api/user/leaderboard:
     post:
       description: |
         "Keeps a tab of the score"
@@ -55,7 +55,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-amazon-apigateway-integration:
-        uri: "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-2:663814255135:function:ticktactoe/invocations"
+        uri: "arn:aws:apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-2:663814255135:function:leaderboard/invocations"
         httpMethod: "POST"
         type: "aws_proxy"
 
@@ -92,6 +92,16 @@ definitions:
         type: "string"
       message:
         type: "string"
+
+  Leaderboard:
+    type: "object"
+    required:
+    - "leaderboards"
+    properties:
+      leaderboards:
+        type: "array"
+        items:
+          $ref: "#/definitions/User"
 
   User:
     type: "object"

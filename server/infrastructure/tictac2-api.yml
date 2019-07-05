@@ -1,31 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
-Description: >-
+Description:
   A simple backend (read/write to DynamoDB) with a RESTful API endpoint using Amazon API Gateway.
 Parameters: 
   TableNameParameter: 
     Type: String
 Resources:
-  tictactoeapiendpoint:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: "api/user/handler.invoke"
-      Runtime: "nodejs8.10"
-      CodeUri: .
-      Description: >-
-        "A simple backend (read/write to DynamoDB) with a RESTful API endpoint using Amazon API Gateway."
-      MemorySize: 512
-      Timeout: 20
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TableNameParameter
-      Events:
-        Api1:
-          Type: "Api"
-          Properties:
-            Path: "/api/info/{user}"
-            Method: "post"
-
   RoleFuncLeaderBoard:
     Type: "AWS::IAM::Role"
     Properties:
@@ -55,14 +35,37 @@ Resources:
             - "dynamodb:BatchWriteItem"
             - "dynamodb:PutItem"
             - "dynamodb:UpdateItem"
-            Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/userinfo"
+            Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/mypersistentstorage"
           - Effect: "Allow"
             Action:
             - "dynamodb:Get*"
             - "dynamodb:Query"
-            Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/userinfo"
+            Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/mypersistentstorage"
 
-Api:
+  FnLeaderboards:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: "leaderboard"
+      Handler: "api/user/handler.invoke"
+      Role: !GetAtt "RoleFuncLeaderBoard.Arn"
+      Runtime: "nodejs8.10"
+      MemorySize: 512
+      Timeout: 28
+      Events:
+        Connections:
+          Type: "Api"
+          Properties:
+            Path: "/api/users/leaderboard"
+            Method: "get"
+            RestApiId: !Ref "Api"
+        ConnectionsOptions:
+          Type: "Api"
+          Properties:
+            Path: "/api/users/leaderboard"
+            Method: "get"
+            RestApiId: !Ref "Api"
+
+  Api:
     Type: "AWS::Serverless::Api"
     Properties:
       StageName: "Production"
