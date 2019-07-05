@@ -4,7 +4,7 @@ import '../App'
 
 export class Board extends Component {
     populateBoard() {
-        return this.props.location.map((location) => (
+        return this.props.location.map(location => (
             <Square 
               key={location.id} 
               location={location} 

@@ -25,6 +25,18 @@
 	grid-template: repeat(3, 1fr) / repeat(3, 1fr);
 }
 
+.leaderboard
+{
+  width: 500px;
+	height: 100px;
+  background-color: none;
+  color: rgb(0, 0, 0);
+  border: none;
+	
+	display: grid;
+	grid-template: repeat(1, 1fr) / repeat(1, 1fr);
+}
+
 .square
 {
   border: 6px solid #2c3e50;

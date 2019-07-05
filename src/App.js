@@ -1,14 +1,11 @@
 import React, {Component} from 'react';
 import Board from './component/Board';
 import RestartGame from './component/RestartGame';
+import Leaderboard from './component/Leaderboard';
+import axios from 'axios'
 import './App.css';
 
 export class App extends Component {
-    square = {
-      id: 1,
-      label: '-',
-      style: 'square'
-    }
     state = {
       location: [
         {
@@ -57,8 +54,16 @@ export class App extends Component {
           style: 'square'
         }
       ],
-      xIsNext: true
+      xIsNext: true,
+      users: [],
+      done: false
     };
+
+  async componentDidMount() {
+    this.setState({done: true});
+    const res = await axios.post('https://gf0d0g29t3.execute-api.ap-southeast-2.amazonaws.com/production/api/user/leaderboard');
+    this.setState({users: res.data, done: false});
+}
 
   calculateWinner() {
     const winningPattern = [
@@ -116,12 +121,17 @@ export class App extends Component {
     return (
       <div className="wrapper">
         <h1>Tic Tac Toe</h1>
+        <Leaderboard
+          done = {this.state.done}
+          users = {this.state.users}
+        />
         <Board
           location = {this.state.location}
           handleClick = {this.handleClick}
           calculateWinner={this.calculateWinner}
           style= {this.state.style}
         />
+        
         <RestartGame
           handleRestart = {this.handleRestartGame}
         />
